@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import argparse
 import asyncio
 import base64
@@ -12,9 +11,7 @@ import sys
 import time
 from typing import Iterable, List, Optional, Set, Tuple, Dict, Any
 
-# ---------------------------
-# Rate limiter (token bucket)
-# ---------------------------
+#Rate limiter
 class RateLimiter:
     def __init__(self, rate_per_sec: float, burst: Optional[int] = None):
         # rate_per_sec <= 0 disables rate limiting
@@ -45,9 +42,8 @@ class RateLimiter:
             await asyncio.sleep(wait)
 
 
-# ---------------------------
-# Helper parsing functions
-# ---------------------------
+#parsing
+
 def parse_ports(spec: str) -> List[int]:
     ports: Set[int] = set()
     for part in spec.split(","):
@@ -70,8 +66,7 @@ def parse_ports(spec: str) -> List[int]:
     return sorted(ports)
 
 
-def parse_hosts(specs: Iterable[str]) -> List[str]:
-    # Accepts a mix of IPs and CIDRs (comma/space separated). Dedupes, preserves order.
+def parse_hosts(specs: Iterable[str]) -> List[str]: #both ips and cidrs
     tokens: List[str] = []
     for spec in specs:
         if not spec:
@@ -98,9 +93,7 @@ def parse_hosts(specs: Iterable[str]) -> List[str]:
     return list(dict.fromkeys(result))
 
 
-# ---------------------------
-# TLS utilities
-# ---------------------------
+#tls utilities
 def make_ssl_context(verify: bool = False) -> ssl.SSLContext:
     if verify:
         ctx = ssl.create_default_context()
@@ -137,9 +130,6 @@ def parse_peercert_dict(cert: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-# ---------------------------
-# Probing (optional nudges)
-# ---------------------------
 HTTP_PLAINTEXT_PORTS = {80, 8080, 8000, 8888}
 HTTP_TLS_PORTS = {443, 8443, 9443}
 SMTP_PORTS = {25, 587, 2525}
@@ -166,9 +156,8 @@ def build_probe(port: int, host: str, is_tls: bool, enable: bool, sni: Optional[
         return None
 
 
-# ---------------------------
-# Scanner logic
-# ---------------------------
+#Scanner bababoeey logic
+
 async def scan_one(
     ip: str,
     port: int,
@@ -275,9 +264,7 @@ async def scan_one(
     return result
 
 
-# ---------------------------
-# Worker and writer
-# ---------------------------
+#Worker and writer
 async def worker(
     name: str,
     job_q: "asyncio.Queue[Tuple[str, int]]",
@@ -369,9 +356,8 @@ async def writer_task(
         pass
 
 
-# ---------------------------
-# Main and CLI
-# ---------------------------
+#Main and cli
+
 def default_tls_ports() -> Set[int]:
     return {
         443, 8443, 9443,   # HTTPS
@@ -411,7 +397,6 @@ def build_arg_parser():
 
 
 async def main_async(args):
-    # Prompt if interactive or values missing
     if args.interactive or (not args.cidr and not args.ips):
         try:
             host_input = input("Enter IPs or CIDRs (comma/space separated): ").strip()
@@ -504,4 +489,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     sys.exit(main())

@@ -96,3 +96,11 @@ python3 scanner.py --ips 127.0.0.1 --ports 22,80,443 --probe
 ```
 
 ---
+
+## FYI
+
+If you wanna quickstart directly create a workspace in vscode and edit the launch.json
+
+---
+
+---

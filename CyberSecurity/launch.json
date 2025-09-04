@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Async Scanner",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/asyncscan.py",
+      "console": "integratedTerminal",
+      "args": [
+        "--cidr", "192.168.1.0/24",
+        "--ports", "22,80,443",
+        "--concurrency", "300",
+        "--rate", "200",
+        "--probe"
+      ]
+    }
+  ]
+}
